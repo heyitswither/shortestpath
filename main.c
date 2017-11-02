@@ -4,6 +4,13 @@ A:B1=2,B2=5,B3=8
 */
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+
+bool startswith(const char *pre, const char *str) {
+    size_t lenpre = strlen(pre),
+           lenstr = strlen(str);
+    return lenstr < lenpre ? false : strncmp(pre, str, lenpre) == 0;
+}
 
 typedef struct Node Node;
 typedef struct Node {
@@ -26,7 +33,7 @@ Node* get_nodes(char* file) {
         exit(EXIT_FAILURE);
 
     while ((read = getline(&line, &len, fp)) != -1) {
-        // eyes
+        if (
     }
 
     fclose(fp);
