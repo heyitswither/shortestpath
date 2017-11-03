@@ -7,6 +7,7 @@ A:B1=2,B2=5,B3=8
 #include <stdio.h>
 #include <stdbool.h>
 #include <string.h>
+#include <unistd.h>
 
 bool startswith(const char *pre, const char *str) {
     size_t lenpre = strlen(pre),
@@ -45,14 +46,14 @@ Node* get_nodes(char* file) {
     char * line = NULL;
     size_t len = 0;
     ssize_t read;
-    Node* nodes;
+    int lines = get_lines(file);
+    Node* nodes = malloc(lines * 50);
     Node NullNode;
 
-    int lines = get_lines(file);
     for (int i; i<lines; i++) {
         nodes[i] = NullNode;
     }
-  
+
     fp = fopen(file, "r");
     if (fp == NULL) {
         fprintf(stderr, "No such file or directory: '%s'\n", file);
@@ -62,6 +63,7 @@ Node* get_nodes(char* file) {
     while ((read = getline(&line, &len, fp)) != -1) {
         if (startswith("#", line))
             continue;
+        // todo
     }
 
     fclose(fp);
