@@ -29,6 +29,13 @@ typedef struct Node {
     NearNode* neighbors;
 } _node;
 
+
+typedef struct NodeList NodeList;
+typedef struct NodeList {
+    Node* nodes;
+    int count;
+} _nodelist;
+
 int get_lines(char* file) {
     int lines = 0;
     int ch = 0;
@@ -63,7 +70,7 @@ Node make_nullnode() {
     return node;
 }
 
-Node* get_nodes(char* file) {
+NodeList get_nodes(char* file) {
     FILE * fp;
     char * line = NULL;
     size_t len = 0;
@@ -72,11 +79,13 @@ Node* get_nodes(char* file) {
     Node NullNode = make_nullnode();
     NearNode* neighbors = malloc(sizeof(NearNode) * 10);
     neighbors[0] = make_nearnode("B", 2);
-    Node* nodes = malloc(sizeof(Node) * 10);;
-    nodes[0] = make_node("A", 1, neighbors);
+    NodeList nodes = {}; //malloc(sizeof(Node) * 10);;
+    nodes.nodes[0] = make_node("A", 1, neighbors);
+    nodes.count = 1;
 
     for (int i = 0; i<lines; i++) {
-        nodes[i] = NullNode;
+        nodes.nodes[i] = NullNode;
+        nodes.count++;
     }
 
     fp = fopen(file, "r");
@@ -103,13 +112,13 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Usage: %s <node_file>\n", argv[0]);
         return EXIT_FAILURE;
     }
-    Node* nodes = get_nodes(argv[1]);
-    nodes[0].name = "A";
-    nodes[1].name = "B";
-    int nodes_length = sizeof(nodes) / sizeof(Node);
-    printf("node length %d\n", nodes_length);
-    for (int i = 0; i <= nodes_length; i++) {
-        printf("NODE %s", nodes[i].name);
+    NodeList nodes = get_nodes(argv[1]);
+    nodes.nodes[0].name = "A";
+    nodes.nodes[1].name = "B";
+    nodes.count = 2;
+    printf("node length %d\n", nodes.count);
+    for (int i = -1; i <= nodes.count; i++) {
+        printf("NODE %s", nodes.nodes[i].name);
     }
     return 0;
 }
