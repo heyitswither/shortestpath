@@ -17,6 +17,6 @@ C:B=7,A=2
 
 ```
 
-The file must end with a newline (most text editors will put a newline in for you, but if your editor does not, you must do it yourself)
+The file must end with a newline, if it does not, then your last node will be skipped.  Most text editors will put a newline in for you, but if your editor does not, you must do it yourself.
 
 Then run the program with `./main <node_file>`
