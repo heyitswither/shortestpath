@@ -2,9 +2,11 @@
 NODE:NEIGHBOR=WEIGHT,NEIGHBOR2=WEIGHT2
 A:B1=2,B2=5,B3=8
 */
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <string.h>
 
 bool startswith(const char *pre, const char *str) {
     size_t lenpre = strlen(pre),
@@ -12,13 +14,31 @@ bool startswith(const char *pre, const char *str) {
     return lenstr < lenpre ? false : strncmp(pre, str, lenpre) == 0;
 }
 
+/* neighbor node */
+typedef struct NearNode NearNode;
+typedef struct NearNode {
+    char* name;
+    int weight;
+} _nearnode;
+
 typedef struct Node Node;
 typedef struct Node {
     char* name;
-    int weight;
     int length;
-    Node* neighbors;
-};
+    NearNode* neighbors;
+} _node;
+
+int get_lines(char* file) {
+    int lines = 0;
+    int ch = 0;
+    FILE* fp = fopen(file, "r");
+    while(!feof(fp)) {
+        ch = fgetc(fp);
+        if(ch == '\n')
+            lines++;
+    }
+    return lines;
+}
 
 Node* get_nodes(char* file) {
     FILE * fp;
@@ -26,19 +46,29 @@ Node* get_nodes(char* file) {
     size_t len = 0;
     ssize_t read;
     Node* nodes;
+    Node NullNode;
+
+    int lines = get_lines(file);
+    for (int i; i<lines; i++) {
+        nodes[i] = NullNode;
+    }
   
     fp = fopen(file, "r");
-    if (fp == NULL)
+    if (fp == NULL) {
         fprintf(stderr, "No such file or directory: '%s'\n", file);
         exit(EXIT_FAILURE);
+    }
 
     while ((read = getline(&line, &len, fp)) != -1) {
-        if (
+        if (startswith("#", line))
+            continue;
     }
 
     fclose(fp);
     if (line)
         free(line);
+
+    return nodes;
 }
 
 int main(int argc, char** argv) {
