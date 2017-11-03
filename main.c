@@ -41,6 +41,12 @@ int get_lines(char* file) {
     return lines;
 }
 
+Node make_node(char* name, int length, NearNode* neighbors) {
+    //todo
+    Node node = malloc(sizeof(Node));
+    return node;
+}
+
 Node* get_nodes(char* file) {
     FILE * fp;
     char * line = NULL;
@@ -49,6 +55,8 @@ Node* get_nodes(char* file) {
     int lines = get_lines(file);
     Node* nodes = malloc(lines * 50);
     Node NullNode;
+    NullNode.name = "NULL";
+    NullNode.neighbors[] = NearNode;
 
     for (int i; i<lines; i++) {
         nodes[i] = NullNode;
@@ -80,7 +88,9 @@ int main(int argc, char** argv) {
     }
     Node* nodes = get_nodes(argv[1]);
     nodes[0].name = "A";
+    nodes[1].name = "B";
     int nodes_length = sizeof(nodes) / sizeof(Node);
+    printf("node length %d\n", nodes_length);
     for (int i; i <= nodes_length; i++) {
         printf("NODE %s", nodes[i].name);
     }
