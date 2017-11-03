@@ -57,9 +57,10 @@ Node make_node(char* name, int length, NearNode* neighbors) {
 }
 
 Node make_nullnode() {
-    NearNode* neighbors = {0};
+    NearNode* neighbors = malloc(sizeof(NearNode));
     neighbors[0] = make_nearnode("NearNULL", 1);
-    return make_node("NULL", 1, neighbors);
+    Node node = make_node("NULL", 1, neighbors);
+    return node;
 }
 
 Node* get_nodes(char* file) {
@@ -69,9 +70,9 @@ Node* get_nodes(char* file) {
     ssize_t read;
     int lines = get_lines(file);
     Node NullNode = make_nullnode();
-    NearNode* neighbors = {0};
+    NearNode* neighbors = malloc(sizeof(NearNode) * 10);
     neighbors[0] = make_nearnode("B", 2);
-    Node* nodes = {0};
+    Node* nodes = malloc(sizeof(Node) * 10);;
     nodes[0] = make_node("A", 1, neighbors);
 
     for (int i; i<lines; i++) {
