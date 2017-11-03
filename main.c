@@ -75,7 +75,7 @@ Node* get_nodes(char* file) {
     Node* nodes = malloc(sizeof(Node) * 10);;
     nodes[0] = make_node("A", 1, neighbors);
 
-    for (int i; i<lines; i++) {
+    for (int i = 0; i<lines; i++) {
         nodes[i] = NullNode;
     }
 
@@ -108,7 +108,7 @@ int main(int argc, char** argv) {
     nodes[1].name = "B";
     int nodes_length = sizeof(nodes) / sizeof(Node);
     printf("node length %d\n", nodes_length);
-    for (int i; i <= nodes_length; i++) {
+    for (int i = 0; i <= nodes_length; i++) {
         printf("NODE %s", nodes[i].name);
     }
     return 0;
