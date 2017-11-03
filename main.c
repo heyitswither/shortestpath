@@ -78,6 +78,11 @@ int main(int argc, char** argv) {
         fprintf(stderr, "Usage: %s <node_file>\n", argv[0]);
         return EXIT_FAILURE;
     }
-    get_nodes(argv[1]);
+    Node* nodes = get_nodes(argv[1]);
+    nodes[0].name = "A";
+    int nodes_length = sizeof(nodes) / sizeof(Node);
+    for (int i; i <= nodes_length; i++) {
+        printf("NODE %s", nodes[i].name);
+    }
     return 0;
 }
