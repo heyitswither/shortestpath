@@ -1,3 +1,4 @@
+# this is an example comment, it should not be included
 A:B=1,C=3
 B:C=3,A=4
 C:A=3,B=2

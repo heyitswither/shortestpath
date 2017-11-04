@@ -3,6 +3,7 @@ NODE:NEIGHBOR=WEIGHT,NEIGHBOR2=WEIGHT2
 A:B1=2,B2=5,B3=8
 */
 
+#include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
 #include <stdbool.h>
@@ -38,28 +39,25 @@ typedef struct NodeList {
 
 int get_lines(char* file) {
     int lines = 0;
-    int ch = 0;
+    char line[LINE_MAX];
     FILE* fp = fopen(file, "r");
-    while(!feof(fp)) {
-        ch = fgetc(fp);
-        if(ch == '\n')
-            lines++;
+    if (fp == NULL)
+        return 0;
+    while (fgets(line, sizeof(line), fp)) {
+        if(line[0] == '#')
+            continue;
+        lines++;
     }
     return lines;
 }
 
 NearNode make_nearnode(char* name, int weight) {
-    NearNode node = {};
-    node.name = name;
-    node.weight = weight;
+    NearNode node = {name, weight};
     return node;
 }
 
 Node make_node(char* name, int length, NearNode* neighbors) {
-    Node node = {};
-    node.name = name;
-    node.length = length;
-    node.neighbors = neighbors;
+    Node node = {name, length, neighbors};
     return node;
 }
 
@@ -71,15 +69,15 @@ Node make_nullnode() {
 }
 
 NodeList get_nodes(char* file) {
-    FILE * fp;
-    char * line = NULL;
-    size_t len = 0;
-    ssize_t read;
-    int lines = get_lines(file);
+    FILE* fp;
+    char line[LINE_MAX];
     Node NullNode = make_nullnode();
+    int lines = get_lines(file);
     NearNode* neighbors = malloc(sizeof(NearNode) * 10);
     neighbors[0] = make_nearnode("B", 2);
-    NodeList nodes = {}; //malloc(sizeof(Node) * 10);;
+    Node* node_tmp = malloc(sizeof(Node) * 10);
+    node_tmp[0] = NullNode;
+    NodeList nodes = {node_tmp, 0};
     nodes.nodes[0] = make_node("A", 1, neighbors);
     nodes.count = 1;
 
@@ -94,16 +92,13 @@ NodeList get_nodes(char* file) {
         exit(EXIT_FAILURE);
     }
 
-    while ((read = getline(&line, &len, fp)) != -1) {
-        if (startswith("#", line))
+    while (fgets(line, sizeof(line), fp)) {
+        if (line[0] == '#')
             continue;
-        // todo
+        printf("%s", line);
     }
 
     fclose(fp);
-    if (line)
-        free(line);
-
     return nodes;
 }
 
@@ -117,8 +112,8 @@ int main(int argc, char** argv) {
     nodes.nodes[1].name = "B";
     nodes.count = 2;
     printf("node length %d\n", nodes.count);
-    for (int i = -1; i <= nodes.count; i++) {
-        printf("NODE %s", nodes.nodes[i].name);
+    for (int i = 0; i <= nodes.count; i++) {
+        printf("NODE %s\n", nodes.nodes[i].name);
     }
     return 0;
 }
