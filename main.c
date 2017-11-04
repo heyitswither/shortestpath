@@ -6,6 +6,8 @@ A:B1=2,B2=5,B3=8
 #include <limits.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include <unistd.h>
 
 /* neighbor node */
 typedef struct NearNode NearNode;
@@ -55,7 +57,7 @@ Node make_nullnode() {
 }
 
 /* returns a NodeList defined in `file` */
-NodeList get_nodes(char* file) {
+NodeList get_nodes(char* file, bool verbose) {
     FILE* fp = fopen(file, "r");
     if (fp == NULL) {
         fprintf(stderr, "No such file or directory: '%s'\n", file);
@@ -81,7 +83,9 @@ NodeList get_nodes(char* file) {
     while (fgets(line, sizeof(line), fp)) {
         if (line[0] == '#')
             continue;
-        printf("%s", line);
+        if (verbose) {
+            printf("%s", line);
+        }
     }
 
     fclose(fp);
@@ -89,11 +93,24 @@ NodeList get_nodes(char* file) {
 }
 
 int main(int argc, char** argv) {
-    if (argc != 2) {
-        fprintf(stderr, "Usage: %s <node_file>\n", argv[0]);
+    int file_index = 1;
+    bool isVerbose = false;
+    if (((argc != 2) && (argc != 3)) || ((argc == 2) && argv[1][0] == '-')) {
+        fprintf(stderr, "Usage: %s [-V] <file>\n", argv[0]);
         return EXIT_FAILURE;
     }
-    NodeList nodes = get_nodes(argv[1]);
+    if (argv[1][0] == '-') {
+        file_index = 2;
+        if (argv[1][1] == 'V') {
+            isVerbose = true;
+        } else {
+            if ((argv[1][1] != 'h') || (argv[1][1] != '?'))
+                fprintf(stderr, "Unknown option: '%c'\n", argv[1][1]);
+            fprintf(stderr, "Usage: %s [-V] <file>\n", argv[0]);
+            return EXIT_FAILURE;
+        }
+    }
+    NodeList nodes = get_nodes(argv[file_index], isVerbose);
     nodes.nodes[0].name = "A";
     nodes.nodes[1].name = "B";
     nodes.count = 2;
