@@ -9,6 +9,10 @@ A:B1=2,B2=5,B3=8
 #include <stdbool.h>
 #include <unistd.h>
 
+#ifndef LINE_MAX
+#define LINE_MAX 2048
+#endif
+
 /* neighbor node */
 typedef struct NearNode NearNode;
 typedef struct NearNode {
