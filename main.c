@@ -8,6 +8,7 @@ A:B1=2,B2=5,B3=8
 #include <stdio.h>
 #include <stdbool.h>
 #include <unistd.h>
+#include <string.h>
 
 #ifndef LINE_MAX
 #define LINE_MAX 2048
@@ -52,11 +53,29 @@ int get_lines(char* file) {
     return lines;
 }
 
+char** split(char* str, char* s) {
+    char* token;
+    char** tokens = malloc(sizeof(char) * 20);
+    int counter = 0;
+    /* get the first token */
+    token = strtok(str, s);
+
+    /* walk through other tokens */
+    while( token != NULL ) {
+        tokens[counter] = token;
+        counter++;
+        printf( " %s\n", token );
+        token = strtok(NULL, s);
+    }
+
+   return tokens;
+}
+
 /* makes a node with arbitrary data */
 Node make_nullnode() {
     NearNode* neighbors = malloc(sizeof(NearNode));
-    neighbors[0] = (struct NearNode) {"NearNULL", 1};
-    Node node = {"NULL", 1, neighbors};
+    neighbors[0] = (struct NearNode) {"Near No Data", 1};
+    Node node = {"No Data", 1, neighbors};
     return node;
 }
 
@@ -83,6 +102,9 @@ NodeList get_nodes(char* file, bool verbose) {
         nodes.nodes[i] = NullNode;
         nodes.count++;
     }
+
+    if (verbose)
+        puts("INPUT");
 
     while (fgets(line, sizeof(line), fp)) {
         if (line[0] == '#')
@@ -115,9 +137,7 @@ int main(int argc, char** argv) {
         }
     }
     NodeList nodes = get_nodes(argv[file_index], isVerbose);
-    nodes.nodes[0].name = "A";
-    nodes.nodes[1].name = "B";
-    nodes.count = 2;
+    puts("\nDEBUG");
     printf("node length %d\n", nodes.count);
     for (int i = 0; i <= nodes.count; i++) {
         printf("NODE %s\n", nodes.nodes[i].name);
