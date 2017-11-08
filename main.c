@@ -64,7 +64,6 @@ char** split(char* str, char* s) {
     while( token != NULL ) {
         tokens[counter] = token;
         counter++;
-        printf( " %s\n", token );
         token = strtok(NULL, s);
     }
 
@@ -90,13 +89,10 @@ NodeList get_nodes(char* file, bool verbose) {
     int lines = get_lines(file);
     char line[LINE_MAX];
     Node NullNode = make_nullnode();
-    NearNode* neighbors = malloc(sizeof(NearNode) * 10);
-    neighbors[0] = (struct NearNode) {"B", 2};
     Node* node_tmp = malloc(sizeof(Node) * 10);
-    node_tmp[0] = NullNode;
     NodeList nodes = {node_tmp, 0};
-    nodes.nodes[0] = (struct Node) {"A", 1, neighbors};
-    nodes.count = 1;
+    nodes.count = 0;
+    int counter = 0;
 
     for (int i = 0; i<lines; i++) {
         nodes.nodes[i] = NullNode;
@@ -109,12 +105,25 @@ NodeList get_nodes(char* file, bool verbose) {
     while (fgets(line, sizeof(line), fp)) {
         if (line[0] == '#')
             continue;
+        NearNode* neighbors = malloc(sizeof(NearNode) * 20);
+        int neighbors_counter = 0;
+        char** neighbors_in = split(split(line, ":")[1], ",");
+        while (neighbors_in[neighbors_counter] != NULL) {
+            neighbors[neighbors_counter].name = split(neighbors_in[neighbors_counter], "=")[0];
+            neighbors[neighbors_counter].weight = atoi(split(neighbors_in[neighbors_counter], "=")[1]);
+            neighbors_counter++;
+        }
+        nodes.nodes[counter].name = split(line, "=")[0];
+        nodes.nodes[counter].length = neighbors_counter;
+        nodes.nodes[counter].neighbors = neighbors;
+        counter++;
         if (verbose) {
             printf("%s", line);
         }
     }
 
     fclose(fp);
+
     return nodes;
 }
 
@@ -139,7 +148,7 @@ int main(int argc, char** argv) {
     NodeList nodes = get_nodes(argv[file_index], isVerbose);
     puts("\nDEBUG");
     printf("node length %d\n", nodes.count);
-    for (int i = 0; i <= nodes.count; i++) {
+    for (int i = 0; i < nodes.count; i++) {
         printf("NODE %s\n", nodes.nodes[i].name);
     }
     return 0;
