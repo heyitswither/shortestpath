@@ -53,12 +53,18 @@ int get_lines(char* file) {
     return lines;
 }
 
-char** split(char* str, char* s) {
+char** split(const char* str, const char* s) {
+    //char* str = malloc(sizeof(str));
+    //char* s = malloc(sizeof(s));
+    //memcpy(&str, &str_cp, strlen(str_cp)+1);
+    //memcpy(&s, &s_cp, strlen(s_cp)+1);
+    char* no_const = malloc(sizeof(str)+10);
+    memcpy(no_const, str, strlen(str)+1);
     char* token;
-    char** tokens = malloc(sizeof(char) * 20);
+    char** tokens = malloc(sizeof(str));
     int counter = 0;
     /* get the first token */
-    token = strtok(str, s);
+    token = strtok(no_const, s);
 
     /* walk through other tokens */
     while( token != NULL ) {
@@ -107,13 +113,16 @@ NodeList get_nodes(char* file, bool verbose) {
             continue;
         NearNode* neighbors = malloc(sizeof(NearNode) * 20);
         int neighbors_counter = 0;
+        //printf("line is %s", line);
         char** neighbors_in = split(split(line, ":")[1], ",");
+        //printf("line is now %s\n", line);
         while (neighbors_in[neighbors_counter] != NULL) {
             neighbors[neighbors_counter].name = split(neighbors_in[neighbors_counter], "=")[0];
             neighbors[neighbors_counter].weight = atoi(split(neighbors_in[neighbors_counter], "=")[1]);
             neighbors_counter++;
         }
-        nodes.nodes[counter].name = split(line, "=")[0];
+        nodes.nodes[counter].name = split(line, ":")[0];
+        printf("node name is %s", nodes.nodes[counter].name);
         nodes.nodes[counter].length = neighbors_counter;
         nodes.nodes[counter].neighbors = neighbors;
         counter++;
