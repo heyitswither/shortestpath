@@ -91,7 +91,7 @@ NodeList get_nodes(char* file, bool verbose) {
     int lines = get_lines(file);
     char line[LINE_MAX];
     Node NullNode = make_nullnode();
-    Node* node_tmp = malloc(sizeof(Node) * 30);
+    Node* node_tmp = malloc(sizeof(Node) * 20);
     NodeList nodes = {node_tmp, 0};
     int counter = 0;
 
@@ -116,8 +116,8 @@ NodeList get_nodes(char* file, bool verbose) {
         }
         nodes.nodes[counter].name = split(line, ":")[0];
         printf("node name is %s", nodes.nodes[counter].name);
-        //nodes.nodes[counter].length = neighbors_counter;
-        //nodes.nodes[counter].neighbors = neighbors;
+        nodes.nodes[counter].length = neighbors_counter;
+        nodes.nodes[counter].neighbors = neighbors;
 
         counter++;
         if (verbose) {

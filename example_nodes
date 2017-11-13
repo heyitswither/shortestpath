@@ -6,4 +6,4 @@ C:E=2
 D:F=11
 E:D=4
 # this is the ending node. if it has no neighbors, it can be on a line by itself
-F
+F:

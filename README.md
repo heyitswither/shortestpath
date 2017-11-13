@@ -19,8 +19,8 @@ B:C=5,D=10
 C:E=2
 D:F=11
 E:D=4
-# this is the ending node. if it has no neighbors, it can be on a line by itself
-F
+# this is the ending node. if it has no neighbors, it can be on a line with itself and a colon
+F:
 ```
 
 The file must end with a LF (`\n`), if it does not, then your last node will be skipped.  Most text editors will put a newline in for you, but if your editor does not, you must do it yourself.
