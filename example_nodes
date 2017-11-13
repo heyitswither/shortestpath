@@ -1,4 +1,9 @@
-# this is an example comment, it should not be included
-A:B=1,C=3
-B:C=3,A=4
-C:A=3,B=2
+# this is a comment, lines beginning with a # will be ignored
+# the starting node must be first
+A:B=4,C=2
+B:C=5,D=10
+C:E=2
+D:F=11
+E:D=4
+# this is the ending node. if it has no neighbors, it can be on a line by itself
+F
