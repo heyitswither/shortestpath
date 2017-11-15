@@ -14,13 +14,14 @@ A:B1=2,B2=5,B3=8
 #define LINE_MAX 2048
 #endif
 
-/* neighbor node */
+/* neighbor node "class" */
 typedef struct NearNode NearNode;
 typedef struct NearNode {
     char* name;
     int weight;
 } _nearnode;
 
+/* nodes "class" */
 typedef struct Node Node;
 typedef struct Node {
     char* name;
@@ -28,7 +29,9 @@ typedef struct Node {
     NearNode* neighbors;
 } _node;
 
-/* basically just an array of nodes with a count */
+/* basically just an array of nodes with a count ...
+ * I found an easier way to do this without a separate struct with a count,
+ * but it's too much work to implement now */
 typedef struct NodeList NodeList;
 typedef struct NodeList {
     Node* nodes;
@@ -46,6 +49,7 @@ int get_lines(char* file) {
     int lines = 0;
     char line[LINE_MAX];
     while (fgets(line, sizeof(line), fp)) {
+    /* every cycle of the loop sets `line` as the value of the current line */
         if(line[0] == '#')
             continue;
         lines++;
@@ -54,23 +58,28 @@ int get_lines(char* file) {
 }
 
 /* converts a string to an integer */
-int strtoi(char* str_cp) {
+int strtoi(const char* str_cp) {
     if (str_cp == NULL) {
         return 0;
     }
+    /* these two lines make a copy of the arg */
     char* str = malloc(sizeof(str_cp)+1);
     memcpy(str, str_cp, strlen(str_cp)+1);
+    /* remove newline from string */
     strtok(str, "\n");
     int ret = 0;
     sscanf(str, "%d", &ret);
     return ret;
 }
 
+/* split a string `str` into an array by separator `s` */
 char** split(const char* str, const char* s) {
     char** tokens = malloc(sizeof(str)+1);
     if (strcmp(str, s) == 0) {
+        /* return empty array if `str` == `s` */
         return tokens;
     }
+    /* these two lines copy the arg to a different variable */
     char* no_const = malloc(sizeof(str)+1);
     memcpy(no_const, str, strlen(str)+1);
     char* token = malloc(sizeof(str));
@@ -88,14 +97,6 @@ char** split(const char* str, const char* s) {
    return tokens;
 }
 
-/* makes a node with arbitrary data */
-Node make_nullnode() {
-    NearNode* neighbors = malloc(sizeof(NearNode));
-    neighbors[0] = (struct NearNode) {"Near No Data", 1};
-    Node node = {"No Data", 1, neighbors};
-    return node;
-}
-
 /* returns a NodeList defined in `file` */
 NodeList get_nodes(char* file) {
     FILE* fp = fopen(file, "r");
@@ -106,22 +107,19 @@ NodeList get_nodes(char* file) {
 
     int lines = get_lines(file);
     char line[LINE_MAX];
-    Node NullNode = make_nullnode();
     Node* node_tmp = malloc(sizeof(Node) * 20);
-    NodeList nodes = {node_tmp, 0};
+    NodeList nodes = {node_tmp, lines};
     int counter = 0;
 
-    for (int i = 0; i<lines; i++) {
-        nodes.nodes[i] = NullNode;
-        nodes.count++;
-    }
-
     while (fgets(line, sizeof(line), fp)) {
+        /* iterates through input file lines */
         if (line[0] == '#')
             continue;
         NearNode* neighbors = malloc(sizeof(NearNode) * 20);
         int neighbors_counter = 0;
+        /* creates a string array with current node's neighbors */
         char** neighbors_in = split(split(line, ":")[1], ",");
+        /* iterate through neighbors */
         while (neighbors_in[neighbors_counter] != NULL) {
             char* name_tmp = split(neighbors_in[neighbors_counter], "=")[0];
             if (strcmp(name_tmp, "\n") == 0)
@@ -144,11 +142,12 @@ NodeList get_nodes(char* file) {
 
 int main(int argc, char** argv) {
     if (argc != 2) {
-        fprintf(stdout, "Usage: %s <file>\n", argv[0]);
+        fprintf(stderr, "Usage: %s <file>\n", argv[0]);
         return EXIT_FAILURE;
     }
     NodeList nodes = get_nodes(argv[1]);
     printf("node length %d\n", nodes.count);
+    /* cool this prints out the parsed nodes and neighbors */
     for (int i = 0; i < nodes.count; i++) {
         if (i == 0)
             printf("First ");
