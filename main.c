@@ -148,7 +148,6 @@ int main(int argc, char** argv) {
         return EXIT_FAILURE;
     }
     NodeList nodes = get_nodes(argv[1]);
-    puts("\nDEBUG");
     printf("node length %d\n", nodes.count);
     for (int i = 0; i < nodes.count; i++) {
         if (i == 0)
